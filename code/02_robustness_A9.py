@@ -85,24 +85,27 @@ R = R.round(4)
 R.to_csv(os.path.join(OUT, "A9_3_multiple_comparison.csv"), index=False)
 print("\n[A9.3 다중비교]\n", R.to_string(index=False))
 
-# ═══ A9.4 임계값 격자 탐색 ═══════════════════════════════════════
+# ═══ A9.4 임계값 격자 탐색 (Panel A: 명목/본문 기준, Panel B: PPP 대안) ═══
 sweep = []
-for thr_inc in (12535, 15000, 20000, 25000, 30000):
-    for thr_manu in (0.15, 0.18, 0.20, 0.22, 0.25):
-        cond = ((df.gdppc_2019 >= thr_inc) & (df.manu_share_2019 >= thr_manu)
-                & (df.DI_PBE > 0) & (df.is_eu == 0))
-        members = ", ".join(sorted(df.loc[cond, "code"]))
-        d = df.copy(); d["_d"] = cond.astype(int)
-        c = p = np.nan
-        if 0 < d._d.sum() < len(d):
-            c, p = ols_dummy(d, "_d")
-        sweep.append({"income_thr": thr_inc, "manu_thr": thr_manu,
-                      "N": int(cond.sum()), "coef": round(c, 3) if c == c else None,
-                      "p": round(p, 3) if p == p else None, "members": members})
+for scale, col in (("nominal", "gdppc_nominal_2019"), ("ppp", "gdppc_ppp_2019")):
+    for thr_inc in (12535, 15000, 20000, 25000, 30000):
+        for thr_manu in (0.15, 0.18, 0.20, 0.22, 0.25):
+            cond = ((df[col] >= thr_inc) & (df.manu_share_2019 >= thr_manu)
+                    & (df.DI_PBE > 0) & (df.is_eu == 0))
+            members = ", ".join(sorted(df.loc[cond, "code"]))
+            d = df.copy(); d["_d"] = cond.astype(int)
+            c = p = np.nan
+            if 0 < d._d.sum() < len(d):
+                c, p = ols_dummy(d, "_d")
+            sweep.append({"scale": scale, "income_thr": thr_inc, "manu_thr": thr_manu,
+                          "N": int(cond.sum()), "coef": round(c, 3) if c == c else None,
+                          "p": round(p, 3) if p == p else None, "members": members})
 S = pd.DataFrame(sweep)
 S.to_csv(os.path.join(OUT, "A9_4_threshold_sweep.csv"), index=False)
-key = S[(S.income_thr == 20000) & (S.manu_thr.isin([0.20, 0.22]))]
-print("\n[A9.4 임계값 격자] (표 A9.3 해당 행)\n", key.to_string(index=False))
+nomA = S[(S.scale == "nominal")]
+print("\n[A9.4 Panel A(명목)] 구성 종류:", nomA.members.unique())
+key = S[(S.scale == "ppp") & (S.income_thr == 20000) & (S.manu_thr.isin([0.20, 0.22]))]
+print("[A9.4 Panel B(PPP)] (표 A9.3 해당 행)\n", key.to_string(index=False))
 
 # ═══ A9.5 기준연도 민감도 ════════════════════════════════════════
 by_rows = []
@@ -121,8 +124,9 @@ BY.to_csv(os.path.join(OUT, "A9_5_base_year.csv"), index=False)
 print("\n[A9.5 기준연도]\n", BY.to_string(index=False))
 
 # ═══ A9.6 조건(iv) 제거 대안 정의 ════════════════════════════════
-# 조건 (i) Non-EU, (ii) 1인당 GDP ≥ $20,000, (iii) 자체 탄소가격제 운영.
-# (iii)의 후보국 판정: 일본(탄소세) 충족, 말레이시아 미충족 → 대안 그룹 = 한국·대만·일본.
+# 조건 (i) Non-EU, (ii) 명목 1인당 GDP ≥ $20,000, (iii) 제조업/GDP ≥ 20%.
+# 명목 기준으로 일본($41.4K, 20.2%)이 편입, 말레이시아($10.9K)는 (ii)에서 탈락
+# → 대안 그룹 = 한국·대만·일본. (탄소가격제 운영은 정의 조건이 아님 — 본문 3.5절)
 alt = ["KOR", "TWN", "JPN"]
 df["_alt"] = df.code.isin(alt).astype(int)
 c_alt, p_alt = ols_dummy(df, "_alt")

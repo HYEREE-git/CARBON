@@ -1,0 +1,26 @@
+model,term,coef,se_HC1,p
+Model 1,Intercept,0.005,0.054,0.9253
+Model 1,int95,0.006,0.06,0.9175
+Model 1,gap95,-0.481,0.132,0.0003
+Model 1,R2,0.172,,
+Model 1,adjR2,0.135,,
+Model 2,Intercept,0.183,0.271,0.4989
+Model 2,int95,-0.077,0.124,0.5338
+Model 2,gap95,-0.452,0.15,0.0026
+Model 2,lgdp95,-0.012,0.019,0.5051
+Model 2,ggrow,0.015,0.03,0.6065
+Model 2,R2,0.186,,
+Model 2,adjR2,0.111,,
+Model 3,Intercept,0.362,0.321,0.2588
+Model 3,int95,0.175,0.183,0.3376
+Model 3,gap95,-0.602,0.162,0.0002
+Model 3,lgdp95,-0.036,0.021,0.0866
+Model 3,ggrow,-0.085,0.052,0.105
+Model 3,G_EU_Periphery,-0.008,0.104,0.9424
+Model 3,G_Non_EU_Sandwich,0.295,0.131,0.0244
+Model 3,G_China,0.331,0.112,0.0031
+Model 3,G_ASEAN,0.277,0.117,0.0184
+Model 3,G_High_income_Importer,0.209,0.161,0.1953
+Model 3,G_Resource,0.191,0.105,0.0705
+Model 3,R2,0.362,,
+Model 3,adjR2,0.189,,
