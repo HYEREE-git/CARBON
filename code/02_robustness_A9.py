@@ -149,6 +149,8 @@ checks = [
     ("A9.5 기준 2005 계수 +0.507",  BY.loc[BY.기준연도 == 2005, "Sandwich_coef"].iloc[0],  0.507),
     ("A9.6 대안그룹 계수 +0.265",   c_alt,                 0.265),
     ("A9.6 일본 DI Gap +0.474",     jp_gap,                0.474),
+    ("A9.4 명목 $30K 행 +0.060",    float(S[(S.scale=="nominal")&(S.income_thr==30000)&(S.manu_thr==0.20)].coef.iloc[0]), 0.060),
+    ("A9.4 명목 $30K 행 p 0.059",   float(S[(S.scale=="nominal")&(S.income_thr==30000)&(S.manu_thr==0.20)].p.iloc[0]),    0.059),
 ]
 # 주의: A9.2의 두 행은 '제외국' 기준으로 정렬 — 대만 제외 시 잔여=한국(+0.065), 한국 제외 시 잔여=대만(+0.259)
 checks[3] = ("A9.2 대만 제외 → +0.065", loo_rows[1]["coef"], 0.065)

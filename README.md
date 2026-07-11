@@ -9,7 +9,9 @@
 ```
 data/
   country_panel_48.csv      48개국 × 6개 시점(1995–2019) PBE·CBE·GDP 패널 + 그룹 라벨,
-                            2019년 1인당 GDP·제조업 비중, EU 여부
+                            2019년 1인당 GDP(명목·PPP)·제조업 비중, EU 여부
+  sector_net_2019_groups.csv       그룹×부문 NET 내재탄소무역 (2019, MtCO2e) — 그림 6·표 A1
+  sector_net_korea_taiwan.csv      한국·대만×부문 NET (1995·2019) — 그림 7·8
 code/
   01_reproduce_group_stats.py   표 A7(무역위치 시계열)·표 A8(기간별 Tapio DI)·
                                 그림 4(장기 DI Gap)·Box 1(한국·대만) 재현
@@ -52,7 +54,15 @@ python code/03_make_figures.py
 
 그림 1·2(GVC 위치)는 PWT 10.0 `csh_x`(수출의존도)와 1995년 제조업 비중(WDI/UN NA/BEA)
 등 추가 원천이 필요하며 본 패키지 범위 밖이다(원고 그림 캡션에 원천 명기).
-그림 6–8(CBAM 부문 노출)은 OECD 양자·부문 내재배출 자료(동일 DSD) 기반이다.
+
+부문 NET 파생 자료(`sector_net_*.csv`)는 OECD 양자·부문 내재배출 자료
+(DSD_ICIO_GHG_TRADE_2023; 자국내 거래 제외, 78개 경제 × 7개 산업)에서 국가–세계
+순흐름(수출 내재배출 − 수입 내재배출)으로 산출한 값이다(양방향 미러 레코드의
+이중계상을 2로 나누어 보정). 그림 6의 정규화 값(예: Sandwich 4부문 +4.2%)은
+`CBAM4_sum / 그룹 PBE(2019)`로 재현된다(43.3/1,025.7 = +4.22%).
+
+주: 저장소의 그룹 라벨 `High-income Importer`는 원고의 `Advanced non-EU importers`와
+동일 그룹을 가리킨다(미국·일본).
 
 ## 재현 범위
 
